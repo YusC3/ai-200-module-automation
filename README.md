@@ -1,4 +1,4 @@
-# AI-102 Azure Command Scripts
+# AI-200 Azure Command Scripts
 
 A compiled collection of Azure CLI (`.ps1`) scripts organized by learning path and module exercise. These scripts are intended for automation or as a study aid for the [**AI-200 certification**](https://learn.microsoft.com/en-us/training/courses/ai-200t00) and general review.
 
