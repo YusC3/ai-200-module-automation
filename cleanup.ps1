@@ -1,5 +1,5 @@
 # Delete azure rg created for this exercise
-Write-Host " Remove Resource Group '$env:RESOURCE_GROUP' and all accompanied resources AND delete '.env.ps1 script'?"
+Write-Host " Remove Resource Group '$env:RESOURCE_GROUP' and all accompanied resources?"
 Write-Host "[0] no"
 Write-Host "[1] yes"
 Write-Host ""
@@ -11,14 +11,8 @@ switch ($choice) {
         Write-Host "Will not remove resource group '$env:RESOURCE_GROUP'"
     }
     "1" {
-        $envscript = ".env.ps1"
-        Write-Host "Removing resource group and resources...."
+        Write-Host "Removing resource group '$env:RESOURCE_GROUP' and resources...."
         $result = az group delete --name $env:RESOURCE_GROUP --no-wait --yes
-        Write-Host $result
-
-        Write-Host ""
-        Write-Host "Deleting '$envscript' script from directory"
-        $result = Remove-Item $envscript
         Write-Host $result
 
         Write-Host ""

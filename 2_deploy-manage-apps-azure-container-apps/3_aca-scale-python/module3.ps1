@@ -62,12 +62,14 @@ az containerapp show `
 Read-Host "Press enter after editing the YAML file: "
 
 # 3. After YAML file update, update app configuration
+Write-Host "Deploying YAML file update to Web App"
 az containerapp update `
     --name $env:CONTAINER_APP_NAME `
     --resource-group $env:RESOURCE_GROUP `
     --yaml app-config.yaml
 
 # 4. Verify app configuration update
+Write-Host "Verifying that Web App contains new update"
 az containerapp show `
     --name $env:CONTAINER_APP_NAME `
     --resource-group $env:RESOURCE_GROUP `

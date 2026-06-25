@@ -1,0 +1,5 @@
+# Remove root python env 
+.venv
+
+# Remove any created .env.ps1 files
+**/.env.ps1
