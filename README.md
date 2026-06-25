@@ -5,7 +5,8 @@ A compiled collection of Azure CLI (`.ps1`) scripts organized by learning path a
 ---
 
 ## How to Use
-For simplicity, all .ps1 scripts are titled after the module number for the **accompanied learning path**.
+
+For simplicity, all `.ps1` scripts are titled after the module number for the accompanied learning path.
 
 1. Extract the repo zip file to a local folder.
 2. Drop the desired `.ps1` script directly into that extracted folder.
@@ -15,21 +16,25 @@ For simplicity, all .ps1 scripts are titled after the module number for the **ac
 
 ## Folder Structure
 
-Each folder corresponds to a Microsoft Learn learning path, named after the path's URL slug. Inside each folder, exercises are organized into subfolders by module number.
+Each folder corresponds to a Microsoft Learn learning path, named after the path's URL slug. Inside each folder, `.ps1` scripts are placed directly within their corresponding module subfolder alongside the existing exercise content.
 
-For example, the learning path at:
 ```
-https://learn.microsoft.com/en-us/training/paths/deploy-manage-apps-azure-container-apps/
-```
-maps to the folder:
-```
-deploy-manage-apps-azure-container-apps/
-├── module1.ps1 exercise script
-├── module2.ps1 exercise script
-└── ...
+2_deploy-manage-apps-azure-container-apps/
+├── 1_aca-deploy-python/
+│   ├── api/
+│   └── module1.ps1
+├── 2_aca-manage-python/
+│   ├── api/
+│   └── module2.ps1
+└── 3_aca-scale-python/
+    ├── api/
+    ├── client/
+    └── module3.ps1
 ```
 
-To find the script for a given exercise, locate the folder matching the learning path.
+To find the script for a given exercise, navigate to the learning path folder and open the corresponding module subfolder.
+
+> **Note:** Scripts use `Set-PSDebug -Trace 1` for logging instead of `Write-Host`.
 
 ---
 
