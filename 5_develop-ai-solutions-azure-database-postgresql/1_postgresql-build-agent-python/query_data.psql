@@ -1,0 +1,35 @@
+-- 2. Find all conversations for a specific user
+SELECT id, session_id, started_at, metadata
+FROM conversations
+WHERE user_id = 'user_123'
+ORDER BY started_at DESC;
+
+-- 3. Get recent messages across all conversations
+SELECT c.session_id, m.role, m.content, m.created_at
+FROM messages m
+JOIN conversations c ON m.conversation_id = c.id
+ORDER BY m.created_at DESC
+LIMIT 10;
+
+-- 4. Query completed tasks
+SELECT
+    c.session_id,
+    t.task_name,
+    t.status,
+    t.checkpoint_data,
+    t.updated_at
+FROM task_checkpoints t
+JOIN conversations c ON t.conversation_id = c.id
+WHERE t.status = 'completed';
+
+-- 5. Query and count messages by role in each conversation
+SELECT
+    c.id AS conversation_id,
+    m.role,
+    COUNT(*) AS message_count
+FROM conversations c
+JOIN messages m ON c.id = m.conversation_id
+GROUP BY c.id, m.role
+ORDER BY c.id, m.role;
+
+exit
