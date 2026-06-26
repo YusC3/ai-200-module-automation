@@ -1,0 +1,55 @@
+
+-- 2. Verify connection
+SELECT version();
+
+-- 3. Create a database for the agent backend
+CREATE DATABASE agent_memory;
+\c agent_memory
+
+# 4. Run the following command to create a table for conversations...
+CREATE TABLE conversations (
+    id BIGSERIAL PRIMARY KEY,
+    session_id UUID NOT NULL UNIQUE,
+    user_id VARCHAR(255) NOT NULL,
+    started_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ended_at TIMESTAMP WITH TIME ZONE,
+    metadata JSONB DEFAULT '{}'::jsonb
+);
+
+-- 5. Run the following command to create a table for messages...
+CREATE TABLE messages (
+    id BIGSERIAL PRIMARY KEY,
+    conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+    role VARCHAR(50) NOT NULL CHECK (role IN ('user', 'assistant', 'system', 'tool')),
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    metadata JSONB DEFAULT '{}'::jsonb
+);
+
+-- 6. Create a table for task checkpoints
+CREATE TABLE task_checkpoints (
+    id BIGSERIAL PRIMARY KEY,
+    conversation_id BIGINT REFERENCES conversations(id) ON DELETE CASCADE,
+    task_name VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL CHECK (status IN ('pending', 'in_progress', 'completed', 'failed')),
+    checkpoint_data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 7. Create indexes that optimize common queries
+CREATE INDEX idx_messages_conversation_id ON messages(conversation_id);
+CREATE INDEX idx_messages_created_at ON messages(created_at);
+CREATE INDEX idx_task_checkpoints_conversation_id ON task_checkpoints(conversation_id);
+CREATE INDEX idx_conversations_session_id ON conversations(session_id);
+
+-- 8. Adding unique constraint to task_checkpoints table
+ALTER TABLE task_checkpoints
+ADD CONSTRAINT unique_conversation_task
+UNIQUE (conversation_id, task_name);
+
+-- 9. Verify correct schema creation
+\dt
+
+-- 10. Closing psql session
+exit
