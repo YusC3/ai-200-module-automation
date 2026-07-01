@@ -1,0 +1,32 @@
+-- Script for implementing metadata filtering with indexes
+-- 1. Create B-Tree index on the category column.
+CREATE INDEX idx_products_category ON products (category_id);
+
+-- 2. Execute a filtered vector search
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+WHERE category_id = 5
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+-- 3. Test with a more selective filter.
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+WHERE category_id = 5 AND price BETWEEN 100 AND 200
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+-- 4. Create a composite index
+CREATE INDEX idx_products_category_price ON products (category_id, price);
+
+-- 5. Compare and analyze execution plan
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+WHERE category_id = 5 AND price BETWEEN 100 AND 200
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+exit

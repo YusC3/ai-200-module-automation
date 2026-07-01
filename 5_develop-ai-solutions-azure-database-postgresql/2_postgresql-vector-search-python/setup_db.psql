@@ -1,0 +1,22 @@
+-- 8. Enable pgvector extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- 9. Create product table with a vector column
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    category TEXT,
+    description TEXT,
+    price NUMERIC(10, 2),
+    embedding vector(330)
+);
+
+-- 10. Create an HNSW index to enable fast similarity searches...
+CREATE INDEX products_embedding_idx
+ON products USING hnsw (embedding vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);
+
+-- 11. Verify the table and index were created...
+\d products
+
+exit
