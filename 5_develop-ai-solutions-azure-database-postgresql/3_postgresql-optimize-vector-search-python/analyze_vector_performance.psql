@@ -1,0 +1,21 @@
+-- Script to analyze vectors in 'products' table for Path 5 Exercise 3.
+-- 1. Execute a vector similarity query
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+-- 3. Running query 2 more times to get consistent measures.
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+

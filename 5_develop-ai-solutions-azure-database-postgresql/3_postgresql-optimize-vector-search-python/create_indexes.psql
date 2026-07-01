@@ -1,0 +1,63 @@
+-- Script for creating and comparing IVFFlat and HNSW indexes
+-- 1. Create IVFFlat index
+CREATE INDEX idx_products_embedding_ivfflat
+ON products USING ivfflat (embedding vector_cosine_ops)
+WITH (lists = 100);
+
+-- 2. Execure query with the IVFFlat index
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+-- 3. Test with low probes.
+SET ivfflat.probes = 1;
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+-- 4. Test with high probes.
+SET ivfflat.probes = 50;
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+-- CREATE AN HNSW INDEX
+-- 1. Drop IVFFlat index
+DROP INDEX idx_products_embedding_ivfflat;
+
+-- 2. Increase memory available for index building.
+SET maintenance_work_mem = '256MB';
+
+-- 3. Create a HNSW index.
+CREATE INDEX idx_products_embedding_hnsw
+ON products USING hnsw (embedding vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);
+
+-- 4. Execute query wtih the HNSW index.
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+-- 5. Test with low ef_search
+SET hnsw.ef_search = 20;
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
+
+-- 6. Test with high ef_search
+SET hnsw.ef_search = 100;
+EXPLAIN ANALYZE
+SELECT id, name, embedding <=> (SELECT embedding FROM query_vectors) AS distance
+FROM products
+ORDER BY embedding <=> (SELECT embedding FROM query_vectors)
+LIMIT 10;
