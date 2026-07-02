@@ -3,6 +3,7 @@
 Set-PSDebug -Trace 1
 az extension add --name containerapp
 az extension add --name log-analytics
+az extension add --name redisenterprise
 
 az provider register --namespace Microsoft.App
 az provider register --namespace Microsoft.ContainerRegistry
@@ -11,5 +12,6 @@ az provider register --namespace Microsoft.ContainerService
 az provider register --namespace Microsoft.OperationalInsights
 az provider register --namespace Microsoft.DocumentDB
 az provider register --namespace Microsoft.DBforPostgreSQL
+az provider register --namespace Microsoft.Cache
 
 Set-PSDebug -Trace 0
